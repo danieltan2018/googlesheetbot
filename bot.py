@@ -29,7 +29,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
 def checker():
     message = task()
-    if task:
+    if message:
         bot.send_message(chat_id=group, text='<i>This announcement will be sent at 5pm today</i>',
                          parse_mode=telegram.ParseMode.HTML)
         bot.send_message(chat_id=group, text=message,
@@ -38,7 +38,7 @@ def checker():
 
 def sender():
     message = task()
-    if task:
+    if message:
         bot.send_message(chat_id=channel, text=message,
                          parse_mode=telegram.ParseMode.HTML)
 
