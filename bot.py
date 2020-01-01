@@ -16,7 +16,7 @@ import logging
 import schedule
 import time
 import datetime
-from params import bottoken, channel, SPREADSHEET_ID, RANGE_NAME
+from params import bottoken, channel, group, SPREADSHEET_ID, RANGE_NAME
 
 bot = telegram.Bot(token=bottoken)
 
@@ -27,9 +27,20 @@ logger = logging.getLogger(__name__)
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
 
-def sender(message):
-    bot.send_message(chat_id=channel, text=message,
-                     parse_mode=telegram.ParseMode.HTML)
+def checker():
+    message = task()
+    if task:
+        bot.send_message(chat_id=group, text='<i>This announcement will be sent at 5pm today</i>',
+                         parse_mode=telegram.ParseMode.HTML)
+        bot.send_message(chat_id=group, text=message,
+                         parse_mode=telegram.ParseMode.HTML)
+
+
+def sender():
+    message = task()
+    if task:
+        bot.send_message(chat_id=channel, text=message,
+                         parse_mode=telegram.ParseMode.HTML)
 
 
 def task():
@@ -102,7 +113,8 @@ def task():
                 ending = ''
             message = intro + part1 + part2 + part3 + ending
             message = message.strip()
-            sender(message)
+            return(message)
+    return None
 
 
 def getsheet():
@@ -129,8 +141,10 @@ def getsheet():
 
 
 def main():
+    checker()
 
-    schedule.every().day.at("18:00").do(task)
+    schedule.every().day.at("00:00").do(checker)
+    schedule.every().day.at("17:00").do(sender)
 
     while True:
         schedule.run_pending()
