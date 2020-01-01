@@ -1,4 +1,4 @@
-# pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
+# pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib oauth2client
 
 from __future__ import print_function
 import pickle
@@ -42,29 +42,66 @@ def task():
         if datetime.datetime.now().strftime("%d/%m/%y") == date:
             try:
                 intro = row[1].strip()
-                day = row[2].strip()
-                title = row[3].strip()
             except:
                 continue
             try:
-                speaker = row[4].strip()
-                speaker = ' by <b>{}</b>'.format(speaker)
+                day = row[2].strip()
+                title = row[3].strip()
+                if not day:
+                    raise ValueError
+                if not title:
+                    raise ValueError
+                try:
+                    speaker = row[4].strip()
+                    if not speaker:
+                        raise ValueError
+                    speaker = ' by <b>{}</b>'.format(speaker)
+                except:
+                    speaker = ''
+                part1 = ' <b>{}</b>, we will be having <b>{}</b>{}.'.format(
+                    day, title, speaker)
             except:
-                speaker = ''
-            part1 = '{} <b>{}</b>, we will be having <b>{}</b>{}.'.format(
-                intro, day, title, speaker)
+                part1 = ''
             try:
                 venue = row[5].strip()
+                if not venue:
+                    raise ValueError
                 timing = row[6].strip()
+                if not timing:
+                    raise ValueError
                 part2 = '\n\nSee you at the <b>{}</b> at <b>{}</b>!'.format(
                     venue, timing)
             except:
                 part2 = ''
             try:
-                ending = '\n\n' + row[7].strip()
+                chairperson = row[7].strip()
+                if not chairperson:
+                    raise ValueError
+                chairperson = '<b>Chairperson:</b> {}\n'.format(chairperson)
+            except:
+                chairperson = ''
+            try:
+                musician = row[8].strip()
+                if not musician:
+                    raise ValueError
+                musician = '<b>Musician:</b> {}\n'.format(musician)
+            except:
+                musician = ''
+            try:
+                refreshments = row[9].strip()
+                if not refreshments:
+                    raise ValueError
+                refreshments = '<b>Refreshments:</b> {}\n'.format(refreshments)
+            except:
+                refreshments = ''
+            part3 = '\n\n' + chairperson + musician + refreshments
+            part3 = part3.rstrip()
+            try:
+                ending = '\n\n' + row[10].strip()
             except:
                 ending = ''
-            message = part1 + part2 + ending
+            message = intro + part1 + part2 + part3 + ending
+            message = message.strip()
             sender(message)
 
 
@@ -92,9 +129,8 @@ def getsheet():
 
 
 def main():
-    print(getsheet())
 
-    schedule.every().day.at("17:00").do(getsheet)
+    schedule.every().day.at("18:00").do(task)
 
     while True:
         schedule.run_pending()
