@@ -142,6 +142,7 @@ def getsheet():
 
 def main():
 
+    checker()
     schedule.every().day.at("00:00").do(checker)
     schedule.every().day.at("17:00").do(sender)
 
