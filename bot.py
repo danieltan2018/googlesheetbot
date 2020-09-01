@@ -33,14 +33,14 @@ def checker():
         bot.send_message(chat_id=group, text='<i>This announcement will be sent at 5pm today</i>',
                          parse_mode=telegram.ParseMode.HTML)
         bot.send_message(chat_id=group, text=message,
-                         parse_mode=telegram.ParseMode.HTML)
+                         parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
 
 
 def sender():
     message = task()
     if message:
         bot.send_message(chat_id=channel, text=message,
-                         parse_mode=telegram.ParseMode.HTML)
+                         parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=True)
 
 
 def task():
