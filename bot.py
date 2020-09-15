@@ -44,7 +44,12 @@ def sender():
 
 
 def task():
-    values = getsheet()
+    try:
+        values = getsheet()
+    except Exception as e:
+        bot.send_message(chat_id=group, text='<i>An error occurred:</i>\n\n{}'.format(e),
+                         parse_mode=telegram.ParseMode.HTML)
+        return None
     for row in values:
         try:
             date = row[0]
